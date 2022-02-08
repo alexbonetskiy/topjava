@@ -18,6 +18,22 @@ public class MealTo {
         this.excess = excess;
     }
 
+    public String getDescription() {
+        return description;
+    }
+
+    public int getCalories() {
+        return calories;
+    }
+
+    public boolean isExcess() {
+        return excess;
+    }
+
+    public LocalDateTime getDateTime() {
+        return dateTime;
+    }
+
     @Override
     public String toString() {
         return "MealTo{" +
@@ -27,4 +43,6 @@ public class MealTo {
                 ", excess=" + excess +
                 '}';
     }
+
+
 }
