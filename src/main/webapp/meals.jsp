@@ -1,21 +1,26 @@
-<%@ page contentType="text/html;charset=UTF-8"%>
+<%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <html lang="ru">
 <style>
 
- table {
- border-collapse: collapse}
+    table {
+        border-collapse: collapse
+    }
 
- td, th { border: 1px solid black;
-       text-align: center;
-      vertical-align: center;
-       width: 200px;
-      padding: 5px}
+    td, th {
+        border: 1px solid black;
+        text-align: center;
+        vertical-align: center;
+        width: 200px;
+        padding: 5px
+    }
 
- th {font-weight: bold;
-     font-size: larger;
-     padding: 15px}
+    th {
+        font-weight: bold;
+        font-size: larger;
+        padding: 15px
+    }
 
 </style>
 
@@ -28,8 +33,7 @@
 <hr>
 <h2>Meals</h2>
 
-
-<c:set var="listOfMealTo" value="${requestScope.listOfMealTo}" />
+<p><a href="meals?action=add">Add Meal</a></p>
 
 <table>
     <thead>
@@ -43,20 +47,21 @@
     </thead>
     <tbody>
 
-<c:forEach items="${listOfMealTo}" var="mealTo">
+    <c:set var="listOfMealTo" value="${requestScope.listOfMealTo}"/>
 
-
-        <tr style = "color: ${mealTo.excess ? "red" : "green"}">
-            <td><fmt:parseDate value="${ mealTo.dateTime}" pattern="yyyy-MM-dd'T'HH:mm" var="parsedDateTime" type="both" />
+    <c:forEach items="${listOfMealTo}" var="mealTo">
+        <tr style="color: ${mealTo.excess ? "red" : "green"}">
+            <td><fmt:parseDate value="${ mealTo.dateTime}" pattern="yyyy-MM-dd'T'HH:mm" var="parsedDateTime"
+                               type="both"/>
                 <fmt:formatDate pattern="dd.MM.yyyy HH:mm" value="${parsedDateTime}"/></td>
-            <td> <c:out value="${mealTo.description}"/> </td>
-            <td> <c:out value="${mealTo.calories}"/> </td>
-            <td></td>
-            <td></td>
+            <td><c:out value="${mealTo.description}"/></td>
+            <td><c:out value="${mealTo.calories}"/></td>
+            <td><a href="meals?action=update&mealId=<c:out value="${mealTo.mealId}"/>">Update</a></td>
+            <td><a href="meals?action=delete&mealId=<c:out value="${mealTo.mealId}"/>">Delete</a></td>
         </tr>
-</c:forEach>
-        </tbody>
-    </table>
+    </c:forEach>
+    </tbody>
+</table>
 
 
 </body>
