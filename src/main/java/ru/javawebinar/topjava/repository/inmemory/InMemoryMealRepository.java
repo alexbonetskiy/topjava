@@ -5,9 +5,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
+import ru.javawebinar.topjava.util.DateTimeUtil;
 import ru.javawebinar.topjava.util.MealsUtil;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -57,8 +61,17 @@ public class InMemoryMealRepository implements MealRepository {
 
     @Override
     public List<Meal> getAll(int userId) {
-        log.info("delete id = {}, userId = {}", 1d, userId);
-        return repository.get(userId).values().stream().sorted((meal1, meal2) -> Integer.parseInt(meal2.getDate().toString()) - Integer.parseInt(meal1.getDate().toString())).collect(Collectors.toList());
+        log.info("getAll id = {}, userId = {}", 1d, userId);
+        return repository.get(userId).values().stream().sorted((meal1, meal2) -> meal2.getDate().compareTo(meal1.getDate())).collect(Collectors.toList());
+    }
+
+    public List<Meal> getFiltered(LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime, int authUserId) {
+        List<Meal> list = getAll(authUserId);
+        if(startDate != null && endDate !=null)
+          list = list.stream().filter(meal -> DateTimeUtil.isBetweenOpen(meal.getDate(), startDate, endDate)).collect(Collectors.toList());
+        if(startTime != null && endTime !=null && endTime.isAfter(startTime))
+            list = list.stream().filter(meal -> DateTimeUtil.isBetweenOpen(meal.getTime(), startTime, endTime)).collect(Collectors.toList());
+        return list;
     }
 }
 
