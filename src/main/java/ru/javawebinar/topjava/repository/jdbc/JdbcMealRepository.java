@@ -1,6 +1,7 @@
 package ru.javawebinar.topjava.repository.jdbc;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -12,11 +13,15 @@ import org.springframework.stereotype.Repository;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static ru.javawebinar.topjava.Profiles.HSQL_DB;
+import static ru.javawebinar.topjava.Profiles.POSTGRES_DB;
+
 @Repository
-public class JdbcMealRepository implements MealRepository {
+public abstract class JdbcMealRepository<T> implements MealRepository {
 
     private static final RowMapper<Meal> ROW_MAPPER = BeanPropertyRowMapper.newInstance(Meal.class);
 
@@ -83,4 +88,31 @@ public class JdbcMealRepository implements MealRepository {
                 "SELECT * FROM meals WHERE user_id=?  AND date_time >=  ? AND date_time < ? ORDER BY date_time DESC",
                 ROW_MAPPER, userId, startDateTime, endDateTime);
     }
+
+    protected abstract T timeToDb(LocalDateTime localDateTime);
+
+    @Repository
+    @Profile(HSQL_DB)
+    public static class JdbcHsql extends JdbcMealRepository<Timestamp> {
+        public JdbcHsql(JdbcTemplate jdbcTemplate, NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
+            super(jdbcTemplate, namedParameterJdbcTemplate);
+        }
+
+        public Timestamp timeToDb(LocalDateTime localDateTime) {
+            return Timestamp.valueOf(localDateTime);
+        }
+    }
+
+    @Repository
+    @Profile(POSTGRES_DB)
+    public static class JdbcPostgres extends JdbcMealRepository<LocalDateTime> {
+        public JdbcPostgres(JdbcTemplate jdbcTemplate, NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
+            super(jdbcTemplate, namedParameterJdbcTemplate);
+        }
+
+        public LocalDateTime timeToDb(LocalDateTime localDateTime) {
+            return localDateTime;
+        }
+    }
+
 }
