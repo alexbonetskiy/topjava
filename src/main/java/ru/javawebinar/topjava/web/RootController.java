@@ -24,12 +24,17 @@ public class RootController {
         return "index";
     }
 
+
+
     @GetMapping("/users")
     public String getUsers(Model model) {
         log.info("users");
         model.addAttribute("users", service.getAll());
         return "users";
     }
+
+
+
 
     @PostMapping("/users")
     public String setUser(HttpServletRequest request) {
