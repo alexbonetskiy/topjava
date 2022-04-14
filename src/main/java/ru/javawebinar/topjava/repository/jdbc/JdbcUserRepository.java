@@ -70,26 +70,25 @@ public class JdbcUserRepository implements UserRepository {
     @Override
     @Transactional
     public boolean delete(int id) {
-        deleteRoles(get(id));
         return jdbcTemplate.update("DELETE FROM users WHERE id=?", id) != 0;
     }
 
     @Override
     public User get(int id) {
-        List<User> users = jdbcTemplate.query("SELECT * FROM users LEFT JOIN user_roles ON users.id = user_roles.user_id WHERE id=?", oneToManyResultSetExtractor, id);
+        List<User> users = jdbcTemplate.query("SELECT * FROM users LEFT JOIN user_roles ON users.id = user_roles.user_id WHERE id=?", new CustomUserExtractor(), id);
         return DataAccessUtils.singleResult(users);
     }
 
     @Override
     public User getByEmail(String email) {
 //        return jdbcTemplate.queryForObject("SELECT * FROM users WHERE email=?", ROW_MAPPER, email);
-        List<User> users = jdbcTemplate.query("SELECT * FROM users  LEFT JOIN user_roles ON users.id = user_roles.user_id WHERE email=?", oneToManyResultSetExtractor, email);
+        List<User> users = jdbcTemplate.query("SELECT * FROM users  LEFT JOIN user_roles ON users.id = user_roles.user_id WHERE email=?", new CustomUserExtractor(), email);
         return DataAccessUtils.singleResult(users);
     }
 
     @Override
     public List<User> getAll() {
-        return jdbcTemplate.query("SELECT * FROM users LEFT JOIN user_roles ON users.id = user_roles.user_id ORDER BY name, email", oneToManyResultSetExtractor);
+        return jdbcTemplate.query("SELECT * FROM users LEFT JOIN user_roles ON users.id = user_roles.user_id ORDER BY name, email", new CustomUserExtractor());
     }
 
     private void insertRoles(User user) {
