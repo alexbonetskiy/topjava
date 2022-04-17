@@ -16,6 +16,7 @@ public class DateTimeUtil {
     private static final LocalDateTime MIN_DATE = LocalDateTime.of(1, 1, 1, 0, 0);
     private static final LocalDateTime MAX_DATE = LocalDateTime.of(3000, 1, 1, 0, 0);
 
+
     private DateTimeUtil() {
     }
 
