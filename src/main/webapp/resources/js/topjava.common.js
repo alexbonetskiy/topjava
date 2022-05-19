@@ -27,12 +27,12 @@ function deleteRow(id) {
         url: ctx.ajaxUrl + id,
         type: "DELETE"
     }).done(function () {
-        updateTable();
+        ctx.updateTable();
         successNoty("Deleted");
     });
 }
 
-function updateTable() {
+function updateTableByData(data) {
     $.get(ctx.ajaxUrl, function (data) {
         ctx.datatableApi.clear().rows.add(data).draw();
     });
@@ -45,7 +45,7 @@ function save() {
         data: form.serialize()
     }).done(function () {
         $("#editRow").modal("hide");
-        updateTable();
+        ctx.updateTable();
         successNoty("Saved");
     });
 }
